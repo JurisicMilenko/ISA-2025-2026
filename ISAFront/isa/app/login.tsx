@@ -21,6 +21,8 @@ function LoginPage() {
             },{ headers: { 'Accept': 'application/json',
       'Content-Type': 'application/json' } });
             console.log(response.data);
+            localStorage.setItem("auth", JSON.stringify(response.data));
+            alert("Login successful!");
         } catch (error) {
             // Handle signup error
             alert(error)

@@ -14,7 +14,6 @@ import projekat.ISA.Services.PostService;
 
 @RestController
 @RequestMapping("/post")
-@CrossOrigin(origins = "http://localhost:3000")
 public class PostController {
 
     @Autowired
