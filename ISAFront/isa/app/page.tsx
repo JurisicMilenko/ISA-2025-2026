@@ -1,5 +1,6 @@
 import LoginPage from "./login";
-import SignupPage from "./registration"
+import SignupPage from "./registration";
+import UploadPostPage from "./uploadVideo";
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -7,6 +8,7 @@ export default function Home() {
         <h1>HI</h1>
         <SignupPage/>
         <LoginPage/>
+        <UploadPostPage/>
       </main>
     </div>
   );
