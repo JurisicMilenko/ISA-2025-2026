@@ -20,9 +20,6 @@ import lombok.ToString;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @ToString
 @Table(name = "users")
 public class User implements UserDetails {
@@ -41,21 +38,42 @@ public class User implements UserDetails {
 	private String surname;
 	@Column
 	private String address;
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+	    return java.util.Collections.emptyList();
 	}
+
 	@Override
-	public @Nullable String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getPassword() {
+	    return this.password;
 	}
+
 	@Override
 	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
+	    return this.username;
 	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+	    return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+	    return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+	    return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+	    return true;
+	}
+
 	public Long getId() {
 		return id;
 	}

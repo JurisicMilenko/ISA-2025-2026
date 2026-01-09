@@ -55,7 +55,7 @@ function SignupPage() {
             <input type='password' value={password} onChange={(e) => setPassword(e.target.value)}></input>
             <p>confirm password</p>
             <input type='password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}></input>
-            <button onClick={signup}>sign up</button>
+            <button onClick={signup}>Sign up</button>
         </div>
     );
 }
