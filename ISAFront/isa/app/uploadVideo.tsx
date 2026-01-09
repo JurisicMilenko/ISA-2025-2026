@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import axios, { AxiosError } from "axios";
 
 export default function UploadPostPage(): JSX.Element {
@@ -12,22 +12,7 @@ export default function UploadPostPage(): JSX.Element {
   const [video, setVideo] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
 
-  const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const storedAuth = localStorage.getItem("auth");
-    if (!storedAuth) return;
-
-    try {
-      const parsed = JSON.parse(storedAuth);
-      if (parsed?.accessToken) {
-        setToken(parsed.accessToken);
-      }
-    } catch {
-      console.error("Invalid auth object in localStorage");
-    }
-  }, []);
 
   const handleVideoChange = (e: ChangeEvent<HTMLInputElement>) => {
     setVideo(e.target.files?.[0] ?? null);
@@ -38,44 +23,64 @@ export default function UploadPostPage(): JSX.Element {
   };
 
   const submit = async (): Promise<void> => {
-    if (!token) {
+    // Read token directly from localStorage
+    const storedAuth = localStorage.getItem("auth");
+    if (!storedAuth) {
       alert("You must be logged in to upload.");
       return;
     }
 
+    let uploadToken: string | null = null;
+    try {
+      const parsed = JSON.parse(storedAuth);
+      uploadToken = parsed?.accessToken ?? null;
+    } catch {
+      alert("Invalid auth data.");
+      return;
+    }
+
+    if (!uploadToken) {
+      alert("Token missing. Please log in again.");
+      return;
+    }
+
+    // Validate inputs
     if (!video || !thumbnail) {
       alert("Video and thumbnail are required.");
       return;
     }
-
     if (!title.trim() || !description.trim()) {
       alert("Title and description are required.");
       return;
     }
 
+    // Build form data
     const formData = new FormData();
-    formData.append("video", video);      
-    formData.append("thumbnail", thumbnail);  
+    formData.append("video", video);
+    formData.append("thumbnail", thumbnail);
     formData.append("title", title);
     formData.append("description", description);
     formData.append("geographicalLocation", location);
-    formData.append("tags", tags);
+
+    tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .forEach((tag) => {
+        if (tag) formData.append("tags", tag);
+      });
 
     try {
       setLoading(true);
 
-      await axios.post(
-        "http://localhost:8080/post/upload",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.post("http://localhost:8080/post/upload", formData, {
+        headers: {
+          Authorization: `Bearer ${uploadToken}`, // guaranteed valid
+        },
+      });
 
       alert("Video uploaded successfully 🎬");
 
+      // Reset form
       setTitle("");
       setDescription("");
       setTags("");

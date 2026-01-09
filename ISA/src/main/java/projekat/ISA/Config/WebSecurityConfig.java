@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.cors.*;
 
 import projekat.ISA.Auth.RestAuthenticationEntryPoint;
 import projekat.ISA.Auth.TokenAuthenticationFilter;
@@ -99,13 +100,15 @@ public class WebSecurityConfig {
 				"/images/**",
 				"/static/**"
 			).permitAll()
+			.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
 			// za svaki drugi zahtev korisnik mora biti autentifikovan
 			.anyRequest().authenticated()
 		);
 
 		// za development svrhe ukljuci konfiguraciju za CORS iz WebConfig klase
-		http.cors(cors -> cors.configure(http));
+		http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+
 
 		// zbog jednostavnosti primera ne koristimo Anti-CSRF token (https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
 		http.csrf(csrf -> csrf.disable());
@@ -116,4 +119,16 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
