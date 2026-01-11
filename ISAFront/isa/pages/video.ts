@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export type Video = {
     id: string;
     title: string;
@@ -8,4 +10,5 @@ export type Video = {
     timeOfUpload: Date;
     geographicalLocation: string;
     likes: Int32Array;
+    author: User;
   }

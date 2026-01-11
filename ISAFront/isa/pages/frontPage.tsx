@@ -6,6 +6,10 @@ import {Video} from './video'
 function FrontPage() {
     const [videos, setVideos] = useState<Video[]>([]);
 
+    const openProfile = () => {
+        alert("Profile page is under construction.");
+    }
+
     useEffect(() => {
         axios.get('http://localhost:8080/post')
         .then(function (response: any) {
@@ -27,6 +31,7 @@ function FrontPage() {
             <div>
   <img src={`http://localhost:8080/${video.thumbnailPath.replaceAll('\\\\', '/')}`} alt="Video thumbnail" />
             <p>{video.title}</p>
+            <button onClick={openProfile}>{video.author.name}</button>
 </div>
             </a>          
         </li>
