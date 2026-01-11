@@ -23,14 +23,12 @@ function FrontPage() {
 
     const videoFeed = videos.map(video =>
         <li key={video.id}>
-            
             <a href={`/videoDetails/${video.id}`}>
             <div>
   <img src={`http://localhost:8080/${video.thumbnailPath.replaceAll('\\\\', '/')}`} alt="Video thumbnail" />
             <p>{video.title}</p>
 </div>
-            </a>
-            
+            </a>          
         </li>
     );
 

@@ -1,12 +1,18 @@
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from 'react';
 import {Video} from '../video'
+import {User} from '../user'
+import {Comment} from '../comment'
 import axios from 'axios';
+import ReactPaginate from "react-paginate";
 
 const VideoPage = () => {
   const router = useRouter();
   const [video, setVideo] = useState<Video>();
+  const [user, setUser] = useState<User>();
+  const [comments, setComments] = useState<Comment[]>([]);
   const [commentText, setCommentText] = useState('');
+  const [page, setPage] = useState(0);
   const { VideoId } = router.query;
   axios.defaults.withCredentials = true;
   useEffect(() => {
@@ -15,6 +21,29 @@ const VideoPage = () => {
         .then(function (response: any) {
           // handle success
           setVideo(response.data)
+          //alert(response.data[0].thumbnailPath)
+        })
+        .catch(function (error: any) {
+          // handle error
+          console.log(error);
+      })
+
+      axios.get('http://localhost:8080/auth/me')
+        .then(function (response: any) {
+          // handle success
+          setUser(response.data)
+          //if(response.data)
+          //alert(response.data[0].thumbnailPath)
+        })
+        .catch(function (error: any) {
+          // handle error
+          console.log(error);
+      })
+
+      axios.get('http://localhost:8080/comment/post/'+VideoId)
+        .then(function (response: any) {
+          // handle success
+          setComments(response.data.content)
           //alert(response.data[0].thumbnailPath)
         })
         .catch(function (error: any) {
@@ -42,7 +71,7 @@ const VideoPage = () => {
   }
 
   const submitComment = () => {
-    axios.post('http://localhost:8080/post/comment', {
+    axios.post('http://localhost:8080/comment', {
       text: commentText,
       postId: VideoId
       }).then(function (response: any) {
@@ -72,7 +101,11 @@ const VideoPage = () => {
     <p>{video?.description}</p>
     <p>{video?.timeOfUpload.toString()}</p>
     <p>{video?.likes}</p>
-    <button onClick={Like}>Like</button>
+    {user != null ? (
+        <button onClick={Like}>Like</button>
+      ) : (
+        <button>Not allowed to like, go log in</button>
+      )}
 
       <div>
         <h1>Leave a comment</h1>
@@ -82,10 +115,37 @@ const VideoPage = () => {
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
         />
+        {user != null ? (
         <button onClick={submitComment}>Submit</button>
+      ) : (
+        <button>Not allowed to comment, go log in</button>
+      )}
+        <PaginateComments comments={comments} page={page} />
+        <ReactPaginate
+          onPageChange={(event) => setPage(event.selected)}
+        pageCount={Math.ceil(comments?.length / 3)}
+        breakLabel="..."
+        previousLabel="next" 
+        nextLabel = "previous"
+/>
       </div>
     </div>
   );
 };
+
+function PaginateComments({comments, page}: {comments: Comment[], page: number}){
+  const [shownComments, setShownComments] = useState<Comment[]>([]);
+
+  useEffect(() => {
+  setShownComments(
+    comments.filter((item, index) => {
+      return (index >= page * 3) && (index < (page + 1) * 3);
+    })
+  );
+}, [page, comments]);
+  return(
+    <ul>{shownComments && shownComments.map((item, index) => <li>{item.text}</li>)}</ul>
+  )
+}
 
 export default VideoPage;

@@ -110,7 +110,7 @@ public class User implements UserDetails {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public User(Long id, String email, String username, String password, String name, String surname, String adress) {
+	public User(Long id, String email, String username, String password, String name, String surname, String address) {
 		super();
 		this.id = id;
 		this.email = email;
@@ -118,10 +118,19 @@ public class User implements UserDetails {
 		this.password = password;
 		this.name = name;
 		this.surname = surname;
-		this.address = adress;
+		this.address = address;
 	}
 	public User() {
 		super();
 	}
-	
+	public User(User user) {
+		super();
+		this.id = user.id;
+		this.email = user.email;
+		this.username = user.username;
+		this.password = user.password;
+		this.name = user.name;
+		this.surname = user.surname;
+		this.address = user.address;
+	}
 }

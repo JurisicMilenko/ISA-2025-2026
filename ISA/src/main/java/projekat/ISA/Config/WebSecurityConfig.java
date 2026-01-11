@@ -83,7 +83,9 @@ public class WebSecurityConfig {
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(restAuthenticationEntryPoint));
 
 		http.authorizeHttpRequests(auth -> auth
-			.requestMatchers("/uploads/videos/**").authenticated()
+			.requestMatchers(HttpMethod.POST, "/comment").authenticated()
+			.requestMatchers(HttpMethod.GET, "/comment/**").permitAll()
+			.requestMatchers("/post/like/**").authenticated()
 			.requestMatchers("/auth/**").permitAll()		// /auth/**
 			.requestMatchers("/uploads/**").permitAll()	// /h2-console/** ako se koristi H2 baza)
 			.requestMatchers(HttpMethod.GET, "/post/**").permitAll()
