@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import projekat.ISA.Domain.User;
 
@@ -118,7 +119,7 @@ public class TokenUtils {
 	 * @return JWT token ili null ukoliko se token ne nalazi u odgovarajućem zaglavlju HTTP zahteva.
 	 */
 	public String getToken(HttpServletRequest request) {
-		String authHeader = getAuthHeaderFromHeader(request);
+		/*String authHeader = getAuthHeaderFromHeader(request);
 
 		// JWT se prosledjuje kroz header 'Authorization' u formatu:
 		// Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
@@ -127,7 +128,18 @@ public class TokenUtils {
 			return authHeader.substring(7); // preuzimamo samo token (vrednost tokena je nakon "Bearer " prefiksa)
 		}
 
-		return null;
+		return null;*/
+		if (request.getCookies() == null) {
+	        return null;
+	    }
+
+	    for (Cookie cookie : request.getCookies()) {
+	        if ("jwt".equals(cookie.getName())) {
+	            return cookie.getValue();
+	        }
+	    }
+
+	    return null;
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package projekat.ISA.Controllers;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import projekat.ISA.Domain.User;
 import projekat.ISA.Dto.JwtAuthenticationRequest;
@@ -55,6 +56,13 @@ public class AuthenticationController {
 		User user = (User) authentication.getPrincipal();
 		String jwt = tokenUtils.generateToken(user.getUsername());
 		int expiresIn = tokenUtils.getExpiredIn();
+		
+		Cookie jwtCookie = new Cookie("jwt", jwt);
+	    jwtCookie.setHttpOnly(true);
+	    jwtCookie.setPath("/");
+	    jwtCookie.setMaxAge(expiresIn);
+	    
+	    response.addCookie(jwtCookie);
 
 		// Vrati token kao odgovor na uspesnu autentifikaciju
 		return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));

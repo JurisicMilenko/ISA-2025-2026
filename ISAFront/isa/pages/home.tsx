@@ -1,8 +1,7 @@
-import LoginPage from "../pages/login";
-import SignupPage from "../pages/registration";
-import UploadPostPage from "../pages/uploadVideo";
-import FrontPage from '../pages/frontPage'
-import VideoPage from '../pages/videoDetails/[VideoId]'
+import LoginPage from "./login";
+import SignupPage from "./registration";
+import UploadPostPage from "./uploadVideo";
+import FrontPage from './frontPage'
 
 function Home() {
   return (

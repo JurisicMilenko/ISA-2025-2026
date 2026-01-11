@@ -18,7 +18,7 @@ function LoginPage() {
             const response = await axios.post('http://localhost:8080/auth/login', {
                 password,
                 username
-            },{ headers: { 'Accept': 'application/json',
+            },{withCredentials: true, headers: { 'Accept': 'application/json',
       'Content-Type': 'application/json' } });
             console.log(response.data);
             localStorage.setItem("auth", JSON.stringify(response.data));

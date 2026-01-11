@@ -27,6 +27,9 @@ public class Post {
     @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "tag")
     private List<String> tags;
+    
+    @Column(name = "likes")
+    private long likes;
 
     // Path to thumbnail image on the server
     private String thumbnailPath;
