@@ -14,6 +14,8 @@ export default function UploadPostPage() {
 
   const [loading, setLoading] = useState(false);
 
+  axios.defaults.withCredentials = true;
+
   const handleVideoChange = (e: ChangeEvent<HTMLInputElement>) => {
     setVideo(e.target.files?.[0] ?? null);
   };
@@ -69,11 +71,7 @@ export default function UploadPostPage() {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:8080/post/upload", formData, {
-        headers: {
-          Authorization: `Bearer ${uploadToken}`,
-        },
-      });
+      await axios.post("http://localhost:8080/post/upload", formData);
 
       alert("Uploaded video");
 

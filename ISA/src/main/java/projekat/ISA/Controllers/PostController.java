@@ -20,6 +20,7 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+    @Autowired
     private UserService userService;
 
     @GetMapping
@@ -30,6 +31,11 @@ public class PostController {
     @GetMapping("/{id}")
     public Optional<Post> findById(@PathVariable Long id) {
         return postService.findById(id);
+    }
+    
+    @GetMapping("like/{id}")
+    public Optional<Post> likePost(@PathVariable Long id) {
+        return postService.likePost(id);
     }
 
     @PostMapping("/upload")

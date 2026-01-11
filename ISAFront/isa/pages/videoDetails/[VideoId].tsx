@@ -27,6 +27,19 @@ const VideoPage = () => {
     return <div>Loading...</div>;
   }
   
+  const Like = () => {
+    axios.get('http://localhost:8080/post/like/'+VideoId)
+        .then(function (response: any) {
+          // handle success
+          setVideo(response.data)
+          //alert(response.data[0].thumbnailPath)
+        })
+        .catch(function (error: any) {
+          // handle error
+          console.log(error);
+      })
+  }
+
   return( 
     <div>
      <video width="320" height="240" controls preload="none">
@@ -37,11 +50,12 @@ const VideoPage = () => {
         srcLang="en"
         label="English"
       />
-      Your browser does not support the video tag.
     </video>
     <p>{video?.title}</p>
-    <p>{video?.descrition}</p>
+    <p>{video?.description}</p>
     <p>{video?.timeOfUpload.toString()}</p>
+    <p>{video?.likes}</p>
+    <button onClick={Like}>Like</button>
     </div>
 
 

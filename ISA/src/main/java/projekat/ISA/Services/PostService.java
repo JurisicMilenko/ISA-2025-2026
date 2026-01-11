@@ -54,6 +54,7 @@ public class PostService {
                 .author(currentUser)
                 .description(postRequest.getDescription())
                 .tags(postRequest.getTags())
+                .likes(0)
                 .videoPath(videoStorage.resolve(videoFileName).toString())
                 .thumbnailPath(thumbnailStorage.resolve(thumbnailFileName).toString())
                 .geographicalLocation(postRequest.getGeographicalLocation())
@@ -69,6 +70,13 @@ public class PostService {
 
     public Optional<Post> findById(Long id) {
         return postRepository.findById(id);
+    }
+    
+    public Optional<Post> likePost(Long id) {
+    	Optional<Post> post = postRepository.findById(id);
+    	post.get().setLikes(post.get().getLikes()+1);
+    	postRepository.save(post.get());
+    	return post;
     }
 
     public byte[] getThumbnail(Long postId) throws IOException {
