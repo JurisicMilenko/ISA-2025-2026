@@ -6,6 +6,7 @@ import axios from 'axios';
 const VideoPage = () => {
   const router = useRouter();
   const [video, setVideo] = useState<Video>();
+  const [commentText, setCommentText] = useState('');
   const { VideoId } = router.query;
   axios.defaults.withCredentials = true;
   useEffect(() => {
@@ -40,6 +41,22 @@ const VideoPage = () => {
       })
   }
 
+  const submitComment = () => {
+    axios.post('http://localhost:8080/post/comment', {
+      text: commentText,
+      postId: VideoId
+      }).then(function (response: any) {
+        // handle success
+        alert("Comment submitted successfully.");
+        setCommentText('');
+        }
+      )
+        .catch(function (error: any) {
+          // handle error
+          alert(error);
+      })
+  }
+
   return( 
     <div>
      <video width="320" height="240" controls preload="none">
@@ -56,9 +73,18 @@ const VideoPage = () => {
     <p>{video?.timeOfUpload.toString()}</p>
     <p>{video?.likes}</p>
     <button onClick={Like}>Like</button>
+
+      <div>
+        <h1>Leave a comment</h1>
+        <input
+          className="w-full border rounded p-2"
+          placeholder="Comment on this video"
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+        />
+        <button onClick={submitComment}>Submit</button>
+      </div>
     </div>
-
-
   );
 };
 
