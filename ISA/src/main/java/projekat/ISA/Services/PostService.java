@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import projekat.ISA.Domain.Post;
+import projekat.ISA.Domain.User;
 import projekat.ISA.Dto.PostRequest;
 import projekat.ISA.Repositories.PostRepository;
 
@@ -20,8 +21,6 @@ import projekat.ISA.Repositories.PostRepository;
 public class PostService {
 
     private final PostRepository postRepository;
-
-    private final Map<Long, byte[]> thumbnailCache = new ConcurrentHashMap<>();
 
     private final Path videoStorage = Paths.get("uploads/videos/");
     private final Path thumbnailStorage = Paths.get("uploads/thumbnails/");
@@ -38,34 +37,29 @@ public class PostService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Post createPost(PostRequest postRequest) throws IOException {
+    public Post createPost(PostRequest postRequest, User currentUser) throws IOException {
 
-        String videoFileName = UUID.randomUUID() + "_" + postRequest.getVideo().getOriginalFilename();
-        String thumbnailFileName = UUID.randomUUID() + "_" + postRequest.getThumbnail().getOriginalFilename();
+        String videoFileName = UUID.randomUUID() + postRequest.getVideo().getOriginalFilename();
+        String thumbnailFileName = UUID.randomUUID() + postRequest.getThumbnail().getOriginalFilename();
 
         try {
-            Files.copy(postRequest.getVideo().getInputStream(), videoStorage.resolve(videoFileName),
-                    StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(postRequest.getThumbnail().getInputStream(), thumbnailStorage.resolve(thumbnailFileName),
-                    StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(postRequest.getVideo().getInputStream(), videoStorage.resolve(videoFileName), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(postRequest.getThumbnail().getInputStream(), thumbnailStorage.resolve(thumbnailFileName), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IOException("Video or thumbnail upload failed", e);
         }
 
         Post post = Post.builder()
                 .title(postRequest.getTitle())
+                .author(currentUser)
                 .description(postRequest.getDescription())
                 .tags(postRequest.getTags())
-                .geographicalLocation(postRequest.getGeographicalLocation())
                 .videoPath(videoStorage.resolve(videoFileName).toString())
                 .thumbnailPath(thumbnailStorage.resolve(thumbnailFileName).toString())
+                .geographicalLocation(postRequest.getGeographicalLocation())
                 .build();
 
-        Post savedPost = postRepository.save(post);
-
-        thumbnailCache.put(savedPost.getId(), postRequest.getThumbnail().getBytes());
-
-        return savedPost;
+        return postRepository.save(post);
     }
 
 
@@ -76,43 +70,16 @@ public class PostService {
     public Optional<Post> findById(Long id) {
         return postRepository.findById(id);
     }
-    
-    public void deleteById(Long id) throws IOException {
-        Optional<Post> postOpt = postRepository.findById(id);
-        if (postOpt.isPresent()) {
-            Post post = postOpt.get();
-
-            try {
-                Files.deleteIfExists(Paths.get(post.getVideoPath()));
-                Files.deleteIfExists(Paths.get(post.getThumbnailPath()));
-            } catch (IOException e) {
-                throw new IOException("Failed to delete video or thumbnail", e);
-            }
-
-            thumbnailCache.remove(id);
-
-            postRepository.deleteById(id);
-        }
-    }
 
     public byte[] getThumbnail(Long postId) throws IOException {
-        byte[] cached = thumbnailCache.get(postId);
-        if (cached != null) return cached;
-
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
         Path path = Paths.get(post.getThumbnailPath());
         byte[] bytes = Files.readAllBytes(path);
-        thumbnailCache.put(postId, bytes);
         return bytes;
     }
     
     public List<Post> findByTitle(String title) {
         return postRepository.findByTitleContainingIgnoreCase(title);
-    }
-    
-    public List<Post> findByTag(String tag) {
-        return postRepository.findByTags(tag);
     }
 }

@@ -19,10 +19,14 @@ public class Comment {
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
+    @JoinColumn(name = "author_id")
     private User author;
 	
-	@Column(length = 3000)
+	@ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
+	
+	@Column
 	private String text;
 	
 	private LocalDateTime timeOfUpload;

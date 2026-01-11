@@ -19,8 +19,12 @@ public class Post {
     private Long id;
 
     private String title;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    private User author;
 
-    @Column(length = 3000)
+    @Column
     private String description;
 
     @ElementCollection

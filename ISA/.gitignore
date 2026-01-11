@@ -33,3 +33,7 @@ build/
 ### VS Code ###
 .vscode/
 /.apt_generated_tests/
+
+### Uploads ###
+/uploads/
+/uploads/**

@@ -3,11 +3,11 @@
 import React, { useState, ChangeEvent } from "react";
 import axios, { AxiosError } from "axios";
 
-export default function UploadPostPage(): JSX.Element {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [tags, setTags] = useState("");
-  const [location, setLocation] = useState("");
+export default function UploadPostPage() {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [tags, setTags] = useState('');
+  const [location, setLocation] = useState('');
 
   const [video, setVideo] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
@@ -23,7 +23,6 @@ export default function UploadPostPage(): JSX.Element {
   };
 
   const submit = async (): Promise<void> => {
-    // Read token directly from localStorage
     const storedAuth = localStorage.getItem("auth");
     if (!storedAuth) {
       alert("You must be logged in to upload.");
@@ -44,7 +43,6 @@ export default function UploadPostPage(): JSX.Element {
       return;
     }
 
-    // Validate inputs
     if (!video || !thumbnail) {
       alert("Video and thumbnail are required.");
       return;
@@ -54,7 +52,6 @@ export default function UploadPostPage(): JSX.Element {
       return;
     }
 
-    // Build form data
     const formData = new FormData();
     formData.append("video", video);
     formData.append("thumbnail", thumbnail);
@@ -74,13 +71,12 @@ export default function UploadPostPage(): JSX.Element {
 
       await axios.post("http://localhost:8080/post/upload", formData, {
         headers: {
-          Authorization: `Bearer ${uploadToken}`, // guaranteed valid
+          Authorization: `Bearer ${uploadToken}`,
         },
       });
 
-      alert("Video uploaded successfully 🎬");
+      alert("Uploaded video");
 
-      // Reset form
       setTitle("");
       setDescription("");
       setTags("");
@@ -89,8 +85,7 @@ export default function UploadPostPage(): JSX.Element {
       setThumbnail(null);
     } catch (error) {
       const err = error as AxiosError;
-      console.error("Upload failed:", err.response?.status, err.message);
-      alert("Upload failed");
+      alert(err.response?.status + err.message);
     } finally {
       setLoading(false);
     }
@@ -118,7 +113,7 @@ export default function UploadPostPage(): JSX.Element {
 
         <input
           className="w-full border rounded p-2"
-          placeholder="Tags (comma separated)"
+          placeholder="Tags (seperate with ,)"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
         />

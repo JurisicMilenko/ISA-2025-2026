@@ -1,6 +1,7 @@
 package projekat.ISA.Controllers;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import projekat.ISA.Domain.Post;
 import projekat.ISA.Dto.PostRequest;
 import projekat.ISA.Services.PostService;
+import projekat.ISA.Services.UserService;
 
 @RestController
 @RequestMapping("/post")
@@ -18,6 +20,7 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+    private UserService userService;
 
     @GetMapping
     public List<Post> findAll() {
@@ -29,15 +32,10 @@ public class PostController {
         return postService.findById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) throws IOException {
-        postService.deleteById(id);
-    }
-
     @PostMapping("/upload")
-    public Post uploadPost(@ModelAttribute PostRequest postRequest) throws IOException {
+    public Post uploadPost(@ModelAttribute PostRequest postRequest, Principal principal) throws IOException {
 
-        return postService.createPost(postRequest);
+        return postService.createPost(postRequest, userService.findByUsername(principal.getName()));
     }
 
     @GetMapping("/{id}/thumbnail")

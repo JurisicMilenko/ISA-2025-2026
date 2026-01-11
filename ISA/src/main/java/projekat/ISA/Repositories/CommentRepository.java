@@ -9,7 +9,6 @@ import projekat.ISA.Domain.Comment;
 import projekat.ISA.Domain.Post;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-	
-    Page<Comment> findByPostOrderByTimeOfUploadDesc(Comment comment, Pageable pageable);
-    
+	Page<Comment> findByPostOrderByTimeOfUploadDesc(Post post, Pageable pageable);
 }
+
