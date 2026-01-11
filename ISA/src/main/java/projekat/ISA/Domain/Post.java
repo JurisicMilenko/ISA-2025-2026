@@ -19,8 +19,12 @@ public class Post {
     private Long id;
 
     private String title;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    private User author;
 
-    @Column(length = 2000)
+    @Column
     private String description;
 
     @ElementCollection
@@ -28,10 +32,8 @@ public class Post {
     @Column(name = "tag")
     private List<String> tags;
 
-    // Path to thumbnail image on the server
     private String thumbnailPath;
 
-    // Path to video file on the server
     private String videoPath;
 
     private LocalDateTime timeOfUpload;
