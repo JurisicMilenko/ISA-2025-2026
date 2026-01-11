@@ -29,11 +29,13 @@ function FrontPage() {
         <li key={video.id}>
             <a href={`/videoDetails/${video.id}`}>
             <div>
-  <img src={`http://localhost:8080/${video.thumbnailPath.replaceAll('\\\\', '/')}`} alt="Video thumbnail" />
-            <p>{video.title}</p>
-            <button onClick={openProfile}>{video.author.name}</button>
-</div>
-            </a>          
+                <img src={`http://localhost:8080/${video.thumbnailPath.replaceAll('\\\\', '/')}`} alt="Video thumbnail" />
+                <p>{video.title}</p>
+            </div>
+            </a>    
+            <a href={`/userDetails/${video.author.id}`}>
+                <p>By: {video.author.username}</p>
+            </a>      
         </li>
     );
 
