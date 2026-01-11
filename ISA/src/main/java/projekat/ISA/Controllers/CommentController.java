@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import projekat.ISA.Domain.Comment;
 import projekat.ISA.Domain.Post;
 import projekat.ISA.Domain.User;
+import projekat.ISA.Dto.CommentDTO;
 import projekat.ISA.Dto.CommentRequest;
 import projekat.ISA.Services.CommentService;
 import projekat.ISA.Services.PostService;
@@ -49,15 +50,14 @@ public class CommentController {
     }
     
     @GetMapping("/postDTO/{postId}")
-    public Page<Comment> getCommentsDTOForPost(
+    public Page<CommentDTO> getCommentsDTOForPost(
             @PathVariable Long postId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Post post = postService.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
-
         Pageable pageable = PageRequest.of(page, size);
-        return commentService.getCommentsForPost(post, pageable);
+        return commentService.getCommentsDTOForPost(post, pageable);
     }
 }

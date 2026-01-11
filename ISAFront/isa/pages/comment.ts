@@ -1,6 +1,6 @@
 export type Comment = {
     id: string;
-    author: Int32Array;
+    authorName: string;
     post: Int32Array;
     text: string;
     timeOfUpload: Date;

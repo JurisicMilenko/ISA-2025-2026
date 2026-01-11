@@ -40,7 +40,7 @@ const VideoPage = () => {
           console.log(error);
       })
 
-      axios.get('http://localhost:8080/comment/post/'+VideoId)
+      axios.get('http://localhost:8080/comment/postDTO/'+VideoId)
         .then(function (response: any) {
           // handle success
           setComments(response.data.content)
@@ -154,7 +154,12 @@ function PaginateComments({comments, page}: {comments: Comment[], page: number})
     );
 }, [page, comments]);
   return(
-    <ul>{shownComments && shownComments.map((item, index) => <li>{item.text}</li>)}</ul>
+    <ul>{shownComments && shownComments.map((comment, index) => <div style={{
+                    background: "lightblue",
+                    padding: '12px',
+                    margin: '12px',
+                    borderRadius: '12px',
+                }}><li>{comment.text}</li><li>User:{comment.authorName}</li></div>)}</ul>
   )
 }
 
