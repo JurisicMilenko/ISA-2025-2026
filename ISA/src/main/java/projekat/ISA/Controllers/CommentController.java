@@ -17,7 +17,7 @@ import projekat.ISA.Services.UserService;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping("/comment")
 public class CommentController {
 
     private final CommentService commentService;
