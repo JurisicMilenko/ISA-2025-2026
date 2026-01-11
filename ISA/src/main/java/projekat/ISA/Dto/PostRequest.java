@@ -9,9 +9,9 @@ public class PostRequest {
     private String title;
     private String description;
     private List<String> tags;
-    private String geographicalLocation; // optional
-    private MultipartFile video;          // uploaded video file
-    private MultipartFile thumbnail;      // uploaded thumbnail
+    private String geographicalLocation;
+    private MultipartFile video;
+    private MultipartFile thumbnail;
 
     public String getTitle() {
         return title;

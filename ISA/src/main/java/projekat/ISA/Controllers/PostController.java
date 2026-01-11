@@ -34,21 +34,12 @@ public class PostController {
         postService.deleteById(id);
     }
 
-    // Upload new post
     @PostMapping("/upload")
     public Post uploadPost(@ModelAttribute PostRequest postRequest) throws IOException {
 
-        return postService.createPost(
-                postRequest.getVideo(),
-                postRequest.getThumbnail(),
-                postRequest.getTitle(),
-                postRequest.getDescription(),
-                postRequest.getTags(),
-                postRequest.getGeographicalLocation()
-        );
+        return postService.createPost(postRequest);
     }
 
-    // Get thumbnail for a post
     @GetMapping("/{id}/thumbnail")
     public byte[] getThumbnail(@PathVariable Long id) throws IOException {
         return postService.getThumbnail(id);

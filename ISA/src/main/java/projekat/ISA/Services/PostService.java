@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import projekat.ISA.Domain.Post;
+import projekat.ISA.Dto.PostRequest;
 import projekat.ISA.Repositories.PostRepository;
 
 @Service
@@ -28,7 +29,6 @@ public class PostService {
     public PostService(PostRepository postRepository) throws IOException {
         this.postRepository = postRepository;
 
-        // Ensure directories exist
         if (!Files.exists(videoStorage)) {
             Files.createDirectories(videoStorage);
         }
@@ -38,42 +38,36 @@ public class PostService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Post createPost(MultipartFile videoFile, MultipartFile thumbnailFile,
-                           String title, String description, List<String> tags,
-                           String geographicalLocation) throws IOException {
+    public Post createPost(PostRequest postRequest) throws IOException {
 
-        // Generate unique file names to avoid collisions
-        String videoFileName = UUID.randomUUID() + "_" + videoFile.getOriginalFilename();
-        String thumbnailFileName = UUID.randomUUID() + "_" + thumbnailFile.getOriginalFilename();
+        String videoFileName = UUID.randomUUID() + "_" + postRequest.getVideo().getOriginalFilename();
+        String thumbnailFileName = UUID.randomUUID() + "_" + postRequest.getThumbnail().getOriginalFilename();
 
-        // Save video and thumbnail to disk
         try {
-            Files.copy(videoFile.getInputStream(), videoStorage.resolve(videoFileName),
+            Files.copy(postRequest.getVideo().getInputStream(), videoStorage.resolve(videoFileName),
                     StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(thumbnailFile.getInputStream(), thumbnailStorage.resolve(thumbnailFileName),
+            Files.copy(postRequest.getThumbnail().getInputStream(), thumbnailStorage.resolve(thumbnailFileName),
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IOException("Video or thumbnail upload failed", e);
         }
 
-        // Create Post entity
         Post post = Post.builder()
-                .title(title)
-                .description(description)
-                .tags(tags)
-                .geographicalLocation(geographicalLocation)
+                .title(postRequest.getTitle())
+                .description(postRequest.getDescription())
+                .tags(postRequest.getTags())
+                .geographicalLocation(postRequest.getGeographicalLocation())
                 .videoPath(videoStorage.resolve(videoFileName).toString())
                 .thumbnailPath(thumbnailStorage.resolve(thumbnailFileName).toString())
                 .build();
 
-        // Save to DB
         Post savedPost = postRepository.save(post);
 
-        // Cache thumbnail in memory
-        thumbnailCache.put(savedPost.getId(), thumbnailFile.getBytes());
+        thumbnailCache.put(savedPost.getId(), postRequest.getThumbnail().getBytes());
 
         return savedPost;
     }
+
 
     public List<Post> findAll() {
         return postRepository.findAll();
@@ -95,10 +89,8 @@ public class PostService {
                 throw new IOException("Failed to delete video or thumbnail", e);
             }
 
-            // Remove from cache
             thumbnailCache.remove(id);
 
-            // Delete from database
             postRepository.deleteById(id);
         }
     }

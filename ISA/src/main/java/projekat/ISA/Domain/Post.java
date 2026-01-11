@@ -20,7 +20,7 @@ public class Post {
 
     private String title;
 
-    @Column(length = 2000)
+    @Column(length = 3000)
     private String description;
 
     @ElementCollection
@@ -28,10 +28,8 @@ public class Post {
     @Column(name = "tag")
     private List<String> tags;
 
-    // Path to thumbnail image on the server
     private String thumbnailPath;
 
-    // Path to video file on the server
     private String videoPath;
 
     private LocalDateTime timeOfUpload;
