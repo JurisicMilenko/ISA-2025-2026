@@ -47,4 +47,17 @@ public class CommentController {
         Pageable pageable = PageRequest.of(page, size);
         return commentService.getCommentsForPost(post, pageable);
     }
+    
+    @GetMapping("/postDTO/{postId}")
+    public Page<Comment> getCommentsDTOForPost(
+            @PathVariable Long postId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Post post = postService.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        Pageable pageable = PageRequest.of(page, size);
+        return commentService.getCommentsForPost(post, pageable);
+    }
 }

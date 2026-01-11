@@ -137,11 +137,21 @@ function PaginateComments({comments, page}: {comments: Comment[], page: number})
   const [shownComments, setShownComments] = useState<Comment[]>([]);
 
   useEffect(() => {
-  setShownComments(
-    comments.filter((item, index) => {
-      return (index >= page * 3) && (index < (page + 1) * 3);
-    })
-  );
+   /* const response = await axios.get('http://localhost:8080/user/',{withCredentials: true, headers: { 'Accept': 'application/json',
+      'Content-Type': 'application/json' } });
+            console.log(response.data);
+            localStorage.setItem("auth", JSON.stringify(response.data));
+            alert("Login successful!");
+        } catch (error) {
+            // Handle signup error
+            alert(error)
+        }
+*/
+    setShownComments(
+      comments.filter((item, index) => {
+        return (index >= page * 3) && (index < (page + 1) * 3);
+      })
+    );
 }, [page, comments]);
   return(
     <ul>{shownComments && shownComments.map((item, index) => <li>{item.text}</li>)}</ul>

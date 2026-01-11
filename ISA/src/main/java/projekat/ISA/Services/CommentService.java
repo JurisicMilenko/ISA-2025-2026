@@ -11,6 +11,7 @@ import projekat.ISA.Domain.User;
 import projekat.ISA.Dto.CommentRequest;
 import projekat.ISA.Repositories.CommentRepository;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -39,6 +40,15 @@ public class CommentService {
     }
 
     public Page<Comment> getCommentsForPost(Post post, Pageable pageable) {
+        return commentRepository.findByPostOrderByTimeOfUploadDesc(post, pageable);
+    }
+    
+    public Page<Comment> getCommentsDTOForPost(Post post, Pageable pageable) {
+    	Page<Comment> comments = getCommentsDTOForPost(post, pageable);
+    	//Page<CommentDTO> commentsDTO = new Page<CommentDTO>;
+    	for(Comment comment : comments) {
+    		
+    	}
         return commentRepository.findByPostOrderByTimeOfUploadDesc(post, pageable);
     }
 
