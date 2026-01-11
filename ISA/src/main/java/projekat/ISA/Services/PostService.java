@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -79,6 +80,7 @@ public class PostService {
     	return post;
     }
 
+    @Cacheable(value = "postThumbnails", key = "#postId")
     public byte[] getThumbnail(Long postId) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
