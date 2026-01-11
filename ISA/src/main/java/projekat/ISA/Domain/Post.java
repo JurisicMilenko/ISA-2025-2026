@@ -3,8 +3,10 @@ package projekat.ISA.Domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "posts")
@@ -12,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Post {
+public class Post implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
