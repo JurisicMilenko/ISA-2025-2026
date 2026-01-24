@@ -12,12 +12,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.*;
 
+import jakarta.servlet.http.HttpServletResponse;
 import projekat.ISA.Auth.RestAuthenticationEntryPoint;
 import projekat.ISA.Auth.TokenAuthenticationFilter;
 import projekat.ISA.Domain.CustomUserDetailsService;
@@ -88,7 +90,8 @@ public class WebSecurityConfig {
 			.requestMatchers("/post/like/**").authenticated()
 			.requestMatchers("/auth/**").permitAll()		// /auth/**
 			.requestMatchers("/uploads/**").permitAll()	// /h2-console/** ako se koristi H2 baza)
-			.requestMatchers(HttpMethod.GET, "/post/**").permitAll()
+			.requestMatchers(HttpMethod.GET, "/post/**")
+			.permitAll().requestMatchers(HttpMethod.GET, "/user/**").permitAll()
 			// ukoliko ne zelimo da koristimo @PreAuthorize anotacije nad metodama kontrolera, moze se iskoristiti hasRole() metoda da se ogranici
 			// koji tip korisnika moze da pristupi odgovarajucoj ruti. Npr. ukoliko zelimo da definisemo da ruti 'admin' moze da pristupi
 			// samo korisnik koji ima rolu 'ADMIN', navodimo na sledeci nacin:
@@ -107,7 +110,15 @@ public class WebSecurityConfig {
 
 			// za svaki drugi zahtev korisnik mora biti autentifikovan
 			.anyRequest().authenticated()
-		);
+		).logout(logout -> logout
+			    .logoutUrl("/logout")
+			    .logoutSuccessHandler((req, res, auth) -> {
+			        SecurityContextHolder.clearContext();
+			        res.setStatus(HttpServletResponse.SC_OK);
+			    })
+			    .invalidateHttpSession(true)
+			    .deleteCookies("jwt")
+			);
 
 		// za development svrhe ukljuci konfiguraciju za CORS iz WebConfig klase
 		http.cors(cors -> cors.configurationSource(corsConfigurationSource()));

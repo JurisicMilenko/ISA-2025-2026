@@ -66,7 +66,7 @@ public class PostService {
 
 
     public List<Post> findAll() {
-        return postRepository.findAll();
+        return postRepository.findAllByOrderByTimeOfUploadDesc();
     }
 
     public Optional<Post> findById(Long id) {

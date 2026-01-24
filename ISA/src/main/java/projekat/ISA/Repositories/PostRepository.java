@@ -10,5 +10,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByTitleContainingIgnoreCase(String title);
 
     List<Post> findByTags(String tag);
+    
+    List<Post> findAllByOrderByTimeOfUploadDesc();
 }
 
