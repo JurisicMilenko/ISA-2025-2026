@@ -34,6 +34,8 @@ public class Post implements Serializable{
     @Column(name = "tag")
     private List<String> tags;
     
+    private long views;
+    
     @Column(name = "likes")
     private long likes;
 
@@ -48,5 +50,6 @@ public class Post implements Serializable{
     @PrePersist
     protected void onCreate() {
         timeOfUpload = LocalDateTime.now();
+        views = 0;
     }
 }

@@ -100,6 +100,7 @@ const VideoPage = () => {
     <p>{video?.title}</p>
     <p>{video?.description}</p>
     <p>{video?.timeOfUpload.toString()}</p>
+    <p>Views: {video?.views}</p>
     <p>{video?.likes}</p>
     {user != null ? (
         <button onClick={Like}>Like</button>

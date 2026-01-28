@@ -9,6 +9,7 @@ export type Video = {
     videoPath: string;
     timeOfUpload: Date;
     geographicalLocation: string;
+    views: Int32Array;
     likes: Int32Array;
     author: User;
   }

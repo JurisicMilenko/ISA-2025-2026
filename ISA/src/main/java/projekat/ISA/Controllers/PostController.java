@@ -37,6 +37,11 @@ public class PostController {
     public Optional<Post> likePost(@PathVariable Long id) {
         return postService.likePost(id);
     }
+    
+    @GetMapping("view/{id}")
+    public Optional<Post> viewPost(@PathVariable Long id) {
+        return postService.viewPost(id);
+    }
 
     @PostMapping("/upload")
     public Post uploadPost(@ModelAttribute PostRequest postRequest, Principal principal) throws IOException {
