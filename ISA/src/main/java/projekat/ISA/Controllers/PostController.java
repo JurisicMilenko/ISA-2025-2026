@@ -13,6 +13,7 @@ import projekat.ISA.Domain.Post;
 import projekat.ISA.Dto.PostRequest;
 import projekat.ISA.Services.PostService;
 import projekat.ISA.Services.UserService;
+import projekat.ISA.Services.ViewCountService;
 
 @RestController
 @RequestMapping("/post")
@@ -22,6 +23,8 @@ public class PostController {
     private PostService postService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ViewCountService viewCountService;
 
     @GetMapping
     public List<Post> findAll() {
@@ -40,7 +43,12 @@ public class PostController {
     
     @GetMapping("view/{id}")
     public void viewPost(@PathVariable Long id) {
-        postService.viewPost(id);
+    	viewCountService.registerView(id);
+    }
+    
+    @GetMapping("viewsFrom/{id}")
+    public long getViewsById(@PathVariable Long id) {
+    	return viewCountService.getTotalViews(id);
     }
 
     @PostMapping("/upload")
