@@ -79,13 +79,6 @@ public class PostService {
     	postRepository.save(post.get());
     	return post;
     }
-    
-    public Optional<Post> viewPost(Long id) {
-    	Optional<Post> post = postRepository.findById(id);
-    	post.get().setViews(post.get().getViews()+1);
-    	postRepository.save(post.get());
-    	return post;
-    }
 
     @Cacheable(value = "postThumbnails", key = "#postId")
     public byte[] getThumbnail(Long postId) throws IOException {
