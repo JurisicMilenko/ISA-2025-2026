@@ -118,6 +118,17 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<plugin>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-maven-plugin</artifactId>
+			<configuration>
+				<profiles>
+				<profile>replica1</profile>
+				<profile>replica2</profile>
+				</profiles>
+			</configuration>
+		</plugin>
+
 	</build>
 
 </project>
