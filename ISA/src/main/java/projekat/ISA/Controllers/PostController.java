@@ -39,8 +39,8 @@ public class PostController {
     }
     
     @GetMapping("view/{id}")
-    public Optional<Post> viewPost(@PathVariable Long id) {
-        return postService.viewPost(id);
+    public void viewPost(@PathVariable Long id) {
+        postService.viewPost(id);
     }
 
     @PostMapping("/upload")

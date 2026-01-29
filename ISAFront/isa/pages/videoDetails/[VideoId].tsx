@@ -51,6 +51,16 @@ const VideoPage = () => {
           console.log(error);
       })
 
+      axios.get('http://localhost:8080/post/view/'+VideoId)
+        .then(function (response: any) {
+          // handle success
+
+        })
+        .catch(function (error: any) {
+          // handle error
+          console.log(error);
+      })
+
     }, [VideoId]);
 
     if (!video) {
