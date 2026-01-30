@@ -92,4 +92,8 @@ public class PostService {
     public List<Post> findByTitle(String title) {
         return postRepository.findByTitleContainingIgnoreCase(title);
     }
+    
+    public boolean exists(Long postId) {
+        return postRepository.existsById(postId);
+    }
 }

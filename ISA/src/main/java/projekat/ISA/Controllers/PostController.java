@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +32,11 @@ public class PostController {
         return postService.findAll();
     }
 
+    @GetMapping("/exists/{id}")
+    public boolean exists(@PathVariable Long id) {
+        return postService.exists(id);
+    }
+    
     @GetMapping("/{id}")
     public Optional<Post> findById(@PathVariable Long id) {
         return postService.findById(id);
@@ -42,8 +48,10 @@ public class PostController {
     }
     
     @GetMapping("view/{id}")
-    public void viewPost(@PathVariable Long id) {
-    	viewCountService.registerView(id);
+    public ResponseEntity<Void> viewPost(@PathVariable Long id) {
+        if(!viewCountService.registerView(id))
+        	return ResponseEntity.notFound().build();
+        return ResponseEntity.ok().build();
     }
     
     @GetMapping("viewsFrom/{id}")
@@ -53,7 +61,6 @@ public class PostController {
 
     @PostMapping("/upload")
     public Post uploadPost(@ModelAttribute PostRequest postRequest, Principal principal) throws IOException {
-
         return postService.createPost(postRequest, userService.findByUsername(principal.getName()));
     }
 
