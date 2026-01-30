@@ -39,6 +39,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
+		String path = request.getRequestURI();
+	    String method = request.getMethod();
+	    
+	    //Broj pregleda i samo preglednanje ne zahteva token
+	    if (method.equals("GET") && 
+	    	    (path.startsWith("/post/view") || path.startsWith("/post/viewsFrom"))) {
+	    	    chain.doFilter(request, response);
+	    	    return;
+	    	}
 
 		String username;
 		

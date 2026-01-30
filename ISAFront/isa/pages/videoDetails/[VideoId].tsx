@@ -17,24 +17,24 @@ const VideoPage = () => {
   axios.defaults.withCredentials = true;
   useEffect(() => {
     if (!router.isReady) return;
+        const replicas = ["http://localhost:8081", "http://localhost:8082"];
+        const replicaIndex = Math.floor(Math.random() * replicas.length);
+
         axios.get('http://localhost:8080/post/'+VideoId)
         .then(function (response: any) {
           // handle success
           setVideo(response.data)
+
+          axios.get(replicas[replicaIndex]+'/post/viewsFrom/'+VideoId)
+            .then(function (response: any) {
+              // handle success
+              setVideo(prev => prev ? {...prev, views: response.data} : prev);
+            })
+            .catch(function (error: any) {
+              // handle error
+              console.log(error);
+          })
           //alert(response.data[0].thumbnailPath)
-        })
-        .catch(function (error: any) {
-          // handle error
-          console.log(error);
-      })
-
-      const replicas = ["http://localhost:8081", "http://localhost:8082"];
-      const replicaIndex = Math.floor(Math.random() * replicas.length);
-
-      axios.get(replicas[replicaIndex]+'/post/viewsFrom/'+VideoId)
-        .then(function (response: any) {
-          // handle success
-          setVideo(prev => prev ? {...prev, views: response.data} : prev);
         })
         .catch(function (error: any) {
           // handle error
