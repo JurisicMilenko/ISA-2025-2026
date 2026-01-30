@@ -17,7 +17,7 @@ public class ViewCountService {
 
     private final GCounterService gCounterService;
     private final ViewCountRepository viewCountRepository;
-    private final RestTemplate restTemplate;
+    private final RestTemplate restTemplate = new RestTemplate();
     private final String urlBase = "http://localhost:8080/post/exists/";
 
     @Transactional

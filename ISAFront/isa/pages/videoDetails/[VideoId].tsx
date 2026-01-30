@@ -28,6 +28,19 @@ const VideoPage = () => {
           console.log(error);
       })
 
+      const replicas = ["http://localhost:8081", "http://localhost:8082"];
+      const replicaIndex = Math.floor(Math.random() * replicas.length);
+
+      axios.get(replicas[replicaIndex]+'/post/viewsFrom/'+VideoId)
+        .then(function (response: any) {
+          // handle success
+          setVideo(prev => prev ? {...prev, views: response.data} : prev);
+        })
+        .catch(function (error: any) {
+          // handle error
+          console.log(error);
+      })
+
       axios.get('http://localhost:8080/auth/me')
         .then(function (response: any) {
           // handle success
@@ -51,7 +64,7 @@ const VideoPage = () => {
           console.log(error);
       })
 
-      axios.get('http://localhost:8080/post/view/'+VideoId)
+      axios.get(replicas[replicaIndex]+'/post/view/'+VideoId)
         .then(function (response: any) {
           // handle success
 
