@@ -84,13 +84,15 @@ const VideoPage = () => {
     axios.get('http://localhost:8080/post/like/'+VideoId)
         .then(function (response: any) {
           // handle success
-          setVideo(response.data)
+          setVideo(prev => prev ? {...prev, likes: response.data.likes} : prev);
+          //setVideo(response.data)
           //alert(response.data[0].thumbnailPath)
         })
         .catch(function (error: any) {
           // handle error
           console.log(error);
       })
+      
   }
 
   const submitComment = () => {

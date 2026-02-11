@@ -29,9 +29,9 @@ public class GCounterService {
         counts.merge(
             videoId,
             newCounts,
-            (localCounter, remoteCounter) -> {
-                localCounter.merge(remoteCounter);
-                return localCounter;
+            (currentC, newC) -> {
+                currentC.merge(newC);
+                return currentC;
             }
         )
     );
