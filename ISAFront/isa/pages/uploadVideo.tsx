@@ -8,6 +8,7 @@ export default function UploadPostPage() {
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
   const [location, setLocation] = useState('');
+  const [premiereTime, setPremiereTime] = useState('');
 
   const [video, setVideo] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
@@ -60,6 +61,7 @@ export default function UploadPostPage() {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("geographicalLocation", location);
+    formData.append("premiereTime", premiereTime);
 
     tags
       .split(",")
@@ -81,6 +83,7 @@ export default function UploadPostPage() {
       setLocation("");
       setVideo(null);
       setThumbnail(null);
+      setPremiereTime("");
     } catch (error) {
       const err = error as AxiosError;
       alert(err.response?.status + err.message);
@@ -121,6 +124,14 @@ export default function UploadPostPage() {
           placeholder="Geographical location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
+        />
+
+        <input
+          className="w-full border rounded p-2"
+          placeholder="Premiere time"
+          value={premiereTime}
+          type="datetime-local"
+          onChange={(e) => setPremiereTime(e.target.value)}
         />
 
         <div>

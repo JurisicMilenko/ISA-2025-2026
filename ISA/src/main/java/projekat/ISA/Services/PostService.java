@@ -55,6 +55,7 @@ public class PostService {
                 .author(currentUser)
                 .description(postRequest.getDescription())
                 .tags(postRequest.getTags())
+                .premiereTime(postRequest.getPremiereTime())
                 .likes(0)
                 .videoPath(videoStorage.resolve(videoFileName).toString())
                 .thumbnailPath(thumbnailStorage.resolve(thumbnailFileName).toString())

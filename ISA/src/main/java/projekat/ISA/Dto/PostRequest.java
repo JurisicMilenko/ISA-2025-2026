@@ -1,5 +1,6 @@
 package projekat.ISA.Dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -10,6 +11,7 @@ public class PostRequest {
     private String description;
     private List<String> tags;
     private String geographicalLocation;
+    private LocalDateTime premiereTime;
     private MultipartFile video;
     private MultipartFile thumbnail;
 
@@ -60,5 +62,14 @@ public class PostRequest {
     public void setThumbnail(MultipartFile thumbnail) {
         this.thumbnail = thumbnail;
     }
+
+	public LocalDateTime getPremiereTime() {
+		return premiereTime;
+	}
+
+	public void setPremiereTime(LocalDateTime premiereTime) {
+		this.premiereTime = premiereTime;
+	}
+    
 }
 

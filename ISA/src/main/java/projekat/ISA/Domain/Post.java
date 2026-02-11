@@ -44,6 +44,8 @@ public class Post implements Serializable{
     private String videoPath;
 
     private LocalDateTime timeOfUpload;
+    
+    private LocalDateTime premiereTime;
 
     private String geographicalLocation;
 

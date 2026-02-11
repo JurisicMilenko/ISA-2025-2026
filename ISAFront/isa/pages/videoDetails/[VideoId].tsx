@@ -13,7 +13,12 @@ const VideoPage = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentText, setCommentText] = useState('');
   const [page, setPage] = useState(0);
+  const [duration, setDuration] = useState(0);
   const { VideoId } = router.query;
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [started, setStarted] = useState(true);
   axios.defaults.withCredentials = true;
   useEffect(() => {
     if (!router.isReady) return;
@@ -73,6 +78,7 @@ const VideoPage = () => {
           // handle error
           console.log(error);
       })
+      
 
     }, [VideoId]);
 
@@ -111,17 +117,65 @@ const VideoPage = () => {
       })
   }
 
+  const Play = () => {
+    const thisVideo = videoRef.current;
+    if (!thisVideo) return;
+
+    if (thisVideo.paused) {
+      thisVideo.play();
+      setIsPlaying(true);
+      const now = new Date();
+      const premiereTime = new Date(video.premiereTime)
+      thisVideo.currentTime = (now.getTime() - premiereTime.getTime())/1000;
+    } else {
+      thisVideo.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const Fullscreen = () => {
+    const thisVideo = videoRef.current;
+    if (!thisVideo) return;
+
+    if (thisVideo.requestFullscreen) {
+      thisVideo.requestFullscreen();
+    }
+  };
+
   return( 
     <div>
-     <video width="320" height="240" controls preload="none">
-      <source src={`http://localhost:8080/${video?.videoPath.replaceAll('\\\\', '/')}`} type="video/mp4" />
+      {!started && <p>Video Hasn't started yet</p>}
+     {started && <video ref={videoRef} width="320" height="240" controls
+     onLoadedMetadata={(e) => {
+          if(video.premiereTime == null)
+            return
+          const thisVideo = e.currentTarget;
+          setDuration(thisVideo.duration);
+          const now = new Date();
+          const premiereTime = new Date(video.premiereTime)
+          if((now.getTime() - premiereTime.getTime())/1000 < thisVideo.duration && now.getTime() - premiereTime.getTime() > 0){
+            thisVideo.currentTime = (now.getTime() - premiereTime.getTime())/1000;
+            thisVideo.controls = false;
+            setIsStreaming(true);
+          }
+          if(now.getTime() - premiereTime.getTime() < 0){
+            setStarted(false);
+          }
+          
+        }}>
+      <source id="video" src={`http://localhost:8080/${video?.videoPath.replaceAll('\\\\', '/')}`} type="video/mp4" />
       <track
         src="/path/to/captions.vtt"
         kind="subtitles"
         srcLang="en"
         label="English"
       />
-    </video>
+    </video>}
+    {isStreaming && 
+    <button onClick={Play}>
+      {isPlaying ? "Pause" : "Play"}
+    </button>
+    }
     <p>{video?.title}</p>
     <p>{video?.description}</p>
     <p>{video?.timeOfUpload.toString()}</p>
