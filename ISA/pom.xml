@@ -125,6 +125,7 @@
 				<profiles>
 				<profile>replica1</profile>
 				<profile>replica2</profile>
+				<profile>replica3</profile>
 				</profiles>
 			</configuration>
 		</plugin>

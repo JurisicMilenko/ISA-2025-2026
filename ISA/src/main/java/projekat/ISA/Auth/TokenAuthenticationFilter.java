@@ -44,7 +44,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 	    
 	    //Broj pregleda i samo preglednanje ne zahteva token
 	    if (method.equals("GET") && 
-	    	    (path.startsWith("/post/view") || path.startsWith("/post/viewsFrom"))) {
+	    	    (path.startsWith("/post/view") || path.startsWith("/post/viewsFrom") || path.startsWith("/health"))) {
 	    	    chain.doFilter(request, response);
 	    	    return;
 	    	}
