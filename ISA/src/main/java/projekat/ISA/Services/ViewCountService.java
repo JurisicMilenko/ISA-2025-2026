@@ -22,7 +22,6 @@ public class ViewCountService {
 
     @Transactional
     public boolean registerView(Long postId) {
-    	//Does post exist?
     	Boolean exists = false;
         try {
             exists = restTemplate.getForObject(urlBase + postId, Boolean.class);
@@ -33,7 +32,6 @@ public class ViewCountService {
         if (!exists) {
             return false;
         }
-    	//If it does, increment GCounter and write in its own database
         gCounterService.increment(postId);
 
         long localCount = gCounterService.getCounts()

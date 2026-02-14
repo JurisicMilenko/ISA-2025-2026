@@ -23,6 +23,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import projekat.ISA.Auth.RestAuthenticationEntryPoint;
 import projekat.ISA.Auth.TokenAuthenticationFilter;
 import projekat.ISA.Domain.CustomUserDetailsService;
+import projekat.ISA.Domain.User;
+import projekat.ISA.Services.ActiveUsersService;
 import projekat.ISA.Util.TokenUtils;
 
 @Configuration
@@ -38,6 +40,9 @@ public class WebSecurityConfig {
     public UserDetailsService userDetailsService() {
         return new CustomUserDetailsService();
     }
+	@Autowired
+    private ActiveUsersService activeUserService;
+
 
 	// Implementacija PasswordEncoder-a koriscenjem BCrypt hashing funkcije.
 	// BCrypt po defalt-u radi 10 rundi hesiranja prosledjene vrednosti.
@@ -88,6 +93,8 @@ public class WebSecurityConfig {
 			.requestMatchers(HttpMethod.POST, "/comment").authenticated()
 			.requestMatchers(HttpMethod.GET, "/comment/**").permitAll()
 			.requestMatchers("/post/like/**").authenticated()
+			//.requestMatchers("/post/like/**").permitAll()
+			.requestMatchers("/actuator/prometheus").permitAll()
 			.requestMatchers("/auth/**").permitAll()		// /auth/**
 			.requestMatchers("/uploads/**").permitAll()	// /h2-console/** ako se koristi H2 baza)
 			.requestMatchers(HttpMethod.GET, "/post/**").permitAll()
@@ -114,6 +121,9 @@ public class WebSecurityConfig {
 		).logout(logout -> logout
 			    .logoutUrl("/logout")
 			    .logoutSuccessHandler((req, res, auth) -> {
+			    	String token = tokenUtils.getToken(req);
+			        activeUserService.logout(tokenUtils.getUsernameFromToken(token));
+
 			        SecurityContextHolder.clearContext();
 			        res.setStatus(HttpServletResponse.SC_OK);
 			    })

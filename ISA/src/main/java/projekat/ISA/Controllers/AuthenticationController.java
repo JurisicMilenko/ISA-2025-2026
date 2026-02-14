@@ -6,8 +6,11 @@ import projekat.ISA.Domain.User;
 import projekat.ISA.Dto.JwtAuthenticationRequest;
 import projekat.ISA.Dto.UserRequest;
 import projekat.ISA.Dto.UserTokenState;
+import projekat.ISA.Services.ActiveUsersService;
 import projekat.ISA.Services.UserService;
 import projekat.ISA.Util.TokenUtils;
+
+import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +35,9 @@ public class AuthenticationController {
 
 	@Autowired
 	private TokenUtils tokenUtils;
+	
+	@Autowired
+	private ActiveUsersService activeUserService;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -57,6 +63,8 @@ public class AuthenticationController {
 		User user = (User) authentication.getPrincipal();
 		String jwt = tokenUtils.generateToken(user.getUsername());
 		int expiresIn = tokenUtils.getExpiredIn();
+		
+		activeUserService.userLoggedIn(user.getUsername(), expiresIn);
 		
 		Cookie jwtCookie = new Cookie("jwt", jwt);
 	    jwtCookie.setHttpOnly(true);

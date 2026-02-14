@@ -14,7 +14,7 @@ function FrontPage() {
     }
 
     const logout = async () => {
-        const response = await axios.post('http://localhost:8080/logout');
+        await axios.post('http://localhost:8080/logout');
         window.location.reload();
     }
 
