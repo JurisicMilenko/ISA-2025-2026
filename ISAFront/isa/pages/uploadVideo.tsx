@@ -73,7 +73,7 @@ export default function UploadPostPage() {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:8080/post/upload", formData);
+      await axios.post("http://localhost:9000/post/upload", formData);
 
       alert("Uploaded video");
 
