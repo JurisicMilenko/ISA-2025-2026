@@ -3,6 +3,7 @@ import SignupPage from "../pages/registration";
 import UploadPostPage from "../pages/uploadVideo";
 import FrontPage from '../pages/frontPage'
 import VideoPage from '../pages/videoDetails/[VideoId]'
+import PopularPage from "@/pages/popular";
 
 function Home() {
   return (
@@ -13,6 +14,7 @@ function Home() {
         <LoginPage/>
         <UploadPostPage/>
         <FrontPage/>
+        <PopularPage/>
       </main>
     </div>
   );

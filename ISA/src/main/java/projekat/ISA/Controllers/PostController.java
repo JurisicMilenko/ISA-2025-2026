@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import projekat.ISA.Domain.Post;
+import projekat.ISA.Domain.View;
 import projekat.ISA.Dto.PostRequest;
 import projekat.ISA.Services.PostService;
 import projekat.ISA.Services.UserService;
 import projekat.ISA.Services.ViewCountService;
+import projekat.ISA.Services.ViewService;
 
 @RestController
 @RequestMapping("/post")
@@ -26,10 +28,17 @@ public class PostController {
     private UserService userService;
     @Autowired
     private ViewCountService viewCountService;
+    @Autowired
+    private ViewService viewService;
 
     @GetMapping
     public List<Post> findAll() {
         return postService.findAll();
+    }
+    
+    @GetMapping("/popular")
+    public List<Post> findTop3() {
+        return viewService.getTop3();
     }
 
     @GetMapping("/exists/{id}")
@@ -52,6 +61,11 @@ public class PostController {
         if(!viewCountService.registerView(id))
         	return ResponseEntity.notFound().build();
         return ResponseEntity.ok().build();
+    }
+    
+    @GetMapping("viewSingular/{id}")
+    public View viewPostSingular(@PathVariable Long id) {
+    	return viewService.save(id);
     }
     
     @GetMapping("viewsFrom/{id}")
