@@ -14,6 +14,7 @@ import projekat.ISA.Domain.Post;
 import projekat.ISA.Domain.View;
 import projekat.ISA.Dto.PostRequest;
 import projekat.ISA.Services.PostService;
+import projekat.ISA.Services.UploadEventService;
 import projekat.ISA.Services.UserService;
 import projekat.ISA.Services.ViewCountService;
 import projekat.ISA.Services.ViewService;
@@ -30,6 +31,8 @@ public class PostController {
     private ViewCountService viewCountService;
     @Autowired
     private ViewService viewService;
+    @Autowired
+    private UploadEventService uploadEventService;
 
     @GetMapping
     public List<Post> findAll() {
@@ -74,8 +77,10 @@ public class PostController {
     }
 
     @PostMapping("/upload")
-    public Post uploadPost(@ModelAttribute PostRequest postRequest, Principal principal) throws IOException {
-        return postService.createPost(postRequest, userService.findByUsername(principal.getName()));
+    public Post uploadPost(@ModelAttribute PostRequest postRequest, Principal principal) throws Exception {
+    	Post post = postService.createPost(postRequest, userService.findByUsername(principal.getName()));
+    	uploadEventService.sendProtobuf(post.getTitle(), post.getAuthor().getUsername(), post.getDescription(), post.getTimeOfUpload());
+        return post;
     }
 
     @GetMapping("/{id}/thumbnail")

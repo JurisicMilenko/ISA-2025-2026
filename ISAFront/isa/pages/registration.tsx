@@ -11,7 +11,8 @@ function SignupPage() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const signup = async () => {
+    const signup = async (e: React.FormEvent) => {
+        e.preventDefault();
         try {
             // Check for empty fields
             if (!surname || !name || !email || !password || !confirmPassword || !address) {
@@ -37,6 +38,7 @@ function SignupPage() {
             // Handle signup error
             alert(error)
         }
+        window.location.reload();
     };
 
     return (

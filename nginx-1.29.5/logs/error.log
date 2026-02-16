@@ -6,3 +6,5 @@
 2026/02/14 20:57:44 [error] 24748#24012: *11 client intended to send too large body: 4621025 bytes, client: 127.0.0.1, server: , request: "POST /post/upload HTTP/1.1", host: "localhost:9000", referrer: "http://localhost:3000/"
 2026/02/14 21:01:35 [error] 24748#24012: *12 client intended to send too large body: 4620915 bytes, client: 127.0.0.1, server: , request: "POST /post/upload HTTP/1.1", host: "localhost:9000", referrer: "http://localhost:3000/"
 2026/02/14 21:03:30 [error] 24748#24012: *13 client intended to send too large body: 4620904 bytes, client: 127.0.0.1, server: , request: "POST /post/upload HTTP/1.1", host: "localhost:9000", referrer: "http://localhost:3000/"
+2026/02/16 21:13:10 [emerg] 7896#27404: CreateDirectory() "D:\IsaRak\ISA-2025-2026\nginx-1.29.5/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2026/02/16 21:15:28 [emerg] 6216#24280: CreateDirectory() "D:\IsaRak\ISA-2025-2026\nginx-1.29.5/temp/client_body_temp" failed (3: The system cannot find the path specified)

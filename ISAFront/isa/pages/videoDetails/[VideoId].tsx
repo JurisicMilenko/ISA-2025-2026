@@ -3,6 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import {Video} from '../video'
 import {User} from '../user'
 import {Comment} from '../comment'
+//websocketjank 
+import { Client, Message } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+//websocketjank 
 import axios from 'axios';
 import ReactPaginate from "react-paginate";
 
@@ -19,6 +23,11 @@ const VideoPage = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [started, setStarted] = useState(true);
+   //websocketjank 
+  const [chatMessages, setChatMessages] = useState<{sender: string, content: string}[]>([]);
+  const [chatInput, setChatInput] = useState('');
+  const stompClientRef = useRef<Client | null>(null);
+   //websocketjank 
   axios.defaults.withCredentials = true;
   useEffect(() => {
     if (!router.isReady) return;
@@ -91,10 +100,38 @@ const VideoPage = () => {
 
     }, [VideoId]);
 
+    //websocketjank 
+    useEffect(() => {
+    if (!isStreaming || !user || !video) return;
+
+    const socket = new SockJS('http://localhost:8080/ws-chat');
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      reconnectDelay: 5000,
+      debug: (str: string) => console.log(str)
+    });
+
+    stompClient.onConnect = () => {
+      console.log('Connected to WS');
+      stompClient.subscribe(`/topic/chat/${video.id}`, (message: Message) => {
+        const chatMessage = JSON.parse(message.body);
+        setChatMessages(prev => [...prev, chatMessage]);
+      });
+    };
+
+    stompClient.activate();
+    stompClientRef.current = stompClient;
+
+    return () => {
+      stompClient.deactivate();
+    };
+    }, [isStreaming, user, video]);
+    //websocketjank 
+
     if (!video) {
     return <div>Loading...</div>;
   }
-  
+
   const Like = () => {
     axios.get('http://localhost:8080/post/like/'+VideoId)
         .then(function (response: any) {
@@ -109,7 +146,25 @@ const VideoPage = () => {
       })
       
   }
+//websocketjank
+  const sendChatMessage = () => {
+  if (!chatInput.trim()) return;
+  if (!user) return;
+  if (!stompClientRef.current) return;
 
+  const message = {
+    sender: user.username || "Anonymous",
+    content: chatInput
+  };
+
+  stompClientRef.current.publish({
+    destination: `/app/chat/${video?.id}`,
+    body: JSON.stringify(message)
+  });
+
+  setChatInput('');
+  };
+//websocketjank
   const submitComment = () => {
     axios.post('http://localhost:8080/comment', {
       text: commentText,
@@ -194,6 +249,27 @@ const VideoPage = () => {
         <button onClick={Like}>Like</button>
       ) : (
         <button>Not allowed to like, go log in</button>
+      )}
+
+      {isStreaming && user && (
+        <div style={{ marginTop: '20px', border: '1px solid gray', padding: '10px', borderRadius: '8px' }}>
+          <h3>Live Chat</h3>
+          <div style={{ maxHeight: '200px', overflowY: 'auto', marginBottom: '10px' }}>
+            {chatMessages.map((msg, idx) => (
+              <div key={idx} style={{ marginBottom: '5px' }}>
+                <strong>{msg.sender}:</strong> {msg.content}
+              </div>
+            ))}
+          </div>
+          <input
+            type="text"
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            placeholder="Type a message..."
+            style={{ width: '70%', marginRight: '10px' }}
+          />
+          <button onClick={sendChatMessage}>Send</button>
+        </div>
       )}
 
       <div>
